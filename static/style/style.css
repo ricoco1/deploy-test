@@ -1,0 +1,77 @@
+/* home style */
+.navbar-nav .nav-item .nav-link.active {
+    color: #FFD700;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 50vh;
+    object-fit: cover;
+}
+
+.carousel-inner {
+    width: 100%; 
+}
+
+.carousel-item {
+    width: 100%;
+}
+/* rooms style */
+.room-details {
+    margin-top: 30px;
+}
+
+.sidebar {
+    border-right: 1px solid #ddd;
+    padding-right: 20px;
+}
+
+.sidebar h5 {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #000;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.room-info h2 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.room-info hr {
+    border-top: 3px solid #FFD700;
+    width: 50px;
+    margin-top: 0;
+}
+
+.room-photos {
+    margin-top: 50px;
+}
+
+.room-photos h3 {
+    margin-bottom: 20px;
+}
+
+.room-photo-card {
+    margin-bottom: 20px;
+}
+
+.nav-item:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-menu a {
+    color: #000;
+}
