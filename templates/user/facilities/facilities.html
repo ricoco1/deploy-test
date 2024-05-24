@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Telaga Mas</title>
+    <meta property="og:title" content="Reservasi Hotel Telaga Mas" />
+    <meta property="og:description" content="Hotel Telaga Mas " />
+    <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/style/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    {% include 'user/facilities/header.html' %}
+    <div class="container text-center my-5">
+        <h1 class="mb-2">ADVENTURE PARK</h1>
+        <hr class="orange-line">
+        <p>The Padma Hotel Bandung’s on-site Adventure Park offers guests a wonderful collection of child-friendly attractions designed to entertain and captivate. Explore the playground, flying fox, high rope, the animal and bird pens, archery lessons or art classes, or even take a hill-trekking tour.</p>
+        
+        <div class="row mt-5">
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <img src="../static/img/hotel-img/foto-hotel.jpg" class="card-img-top" alt="Adventure Park">
+              <div class="card-body">
+                <h5 class="card-title">ADVENTURE PARK</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="../static/img/hotel-img/foto-hotel.jpg" class="card-img-top" alt="Adventure Park">
+                <div class="card-body">
+                <h5 class="card-title">SWIMMING POOL</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="../static/img/hotel-img/foto-hotel.jpg" class="card-img-top" alt="Adventure Park">
+                <div class="card-body">
+                <h5 class="card-title">FITNESS CENTER</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="../static/img/hotel-img/foto-hotel.jpg" class="card-img-top" alt="Adventure Park">
+                <div class="card-body">
+                <h5 class="card-title">GUEST SERVICES</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="../static/img/hotel-img/foto-hotel.jpg" class="card-img-top" alt="Adventure Park">
+                <div class="card-body">
+                <h5 class="card-title">TRANSPORTATION</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% include 'user/footer/footer.html' %}
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
