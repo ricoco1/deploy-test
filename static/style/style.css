@@ -241,35 +241,35 @@ height: 100%;
   font-size: 3.5em;
   margin-bottom: 10px;
   color: #fff;
-  opacity: 0; /* Start with hidden */
-  animation: fadeIn 2s forwards; /* Animation for fade-in */
+  opacity: 0; 
+  animation: fadeIn 2s forwards; 
 }
 
 .sec p {
   font-size: 1em;
   color: #fff;
-  opacity: 0; /* Start with hidden */
-  transform: translateX(50px); /* Start with right position */
-  animation: fadeInRight 2s forwards 1s; /* Animation for fade-in from right with delay */
+  opacity: 0; 
+  transform: translateX(50px); 
+  animation: fadeInRight 2s forwards 1s;
 }
 
-/* Keyframes for h2 fade-in */
+
 @keyframes fadeIn {
   to {
-      opacity: 1; /* End state: fully visible */
+      opacity: 1;
   }
 }
 
-/* Keyframes for p fade-in from right */
+
 @keyframes fadeInRight {
   to {
-      opacity: 1; /* End state: fully visible */
-      transform: translateX(0); /* End state: original position */
+      opacity: 1; 
+      transform: translateX(0); 
   }
 }
 
 .navbar-nav .nav-item {
-  margin: 0 10px; /* Menambahkan margin kiri dan kanan */
+  margin: 0 10px; 
 }
 
 .navbar-nav .nav-link {
