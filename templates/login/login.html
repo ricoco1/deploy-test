@@ -33,6 +33,11 @@
             height: 3rem;
             margin: auto;
         }
+        .compact {
+            margin: 0px;
+            padding: 0px;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -62,7 +67,8 @@
                 </div>
             </div>
             <div class="field">
-                <p>Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
+                <p class="compact">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
+                <p class="compact">Back to <a href="{{ url_for('home') }}">Home</a></p>
             </div>
         </form>
         <div class="spinner-border text-primary" role="status">
@@ -70,6 +76,7 @@
         </div>
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -78,8 +85,8 @@
                 let isValid = true;
 
                 $('input').each(function () {
-                    const $input = $(this);
-                    const $helpText = $input.closest('.field').find('.help.is-danger');
+                    let $input = $(this);
+                    let $helpText = $input.closest('.field').find('.help.is-danger');
 
                     if ($input.val().trim() === '') {
                         $helpText.show();
@@ -93,8 +100,8 @@
                     $('.spinner-border').show(); // Show the spinner
                     $('.button.is-primary').prop('disabled', true); // Disable the submit button
 
-                    const email = $('#login-form input[name="email"]').val();
-                    const password = $('#login-form input[name="password"]').val();
+                    let email = $('#login-form input[name="email"]').val();
+                    let password = $('#login-form input[name="password"]').val();
 
                     $.ajax({
                         type: 'POST',
@@ -107,7 +114,11 @@
                             if (response.result === 'success') {
                                 window.location.href = '/user/index';
                             } else {
-                                alert(response.msg);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: response.msg,
+                                });
                                 $('.spinner-border').hide(); // Hide the spinner
                                 $('.button.is-primary').prop('disabled', false); // Enable the submit button
                             }
