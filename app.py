@@ -72,8 +72,7 @@ def sign_in():
             session['email'] = email
             session['full_name'] = user['full_name']
             return jsonify({'result': 'success', 'msg': 'Login berhasil'})
-        else:
-            return jsonify({'result': 'fail', 'msg': 'Password Salah!!!'})
+    return jsonify({'result': 'fail', 'msg': 'Password Salah!!!'})
 
 @app.route('/book', methods=['GET'])
 def book():
@@ -272,7 +271,7 @@ def user_book():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run("0.0.0.0", port=5000, debug=True)
