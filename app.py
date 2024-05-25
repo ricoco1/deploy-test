@@ -63,7 +63,7 @@ def sign_in():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    user = db.users.find_one({'email': email})
+    user = db.users.find_one({'email': email, 'password': password})
 
     if user:
         hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
@@ -71,11 +71,9 @@ def sign_in():
             session['logged_in'] = True
             session['email'] = email
             session['full_name'] = user['full_name']
-            return jsonify({'result': 'success', 'msg': 'Login berhasil'}), 200
-        else:
-            return jsonify({'result': 'fail', 'msg': 'Password salah'}), 401
+            return jsonify({'result': 'success', 'msg': 'Login berhasil'})
     else:
-        return jsonify({'result': 'fail', 'msg': 'Pengguna tidak ditemukan'}), 404
+        return jsonify({'result': 'fail', 'msg': 'Password Salah!!!'})
 
 @app.route('/book', methods=['GET'])
 def book():
@@ -277,4 +275,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run("0.0.0.0", port=5000, debug=True)
