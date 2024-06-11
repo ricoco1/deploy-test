@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Telaga Mas</title>
+    <title>Hotel Telaga Mas - Reservation History</title>
     <meta property="og:title" content="Reservasi Hotel Telaga Mas" />
     <meta property="og:description" content="Hotel Telaga Mas " />
     <meta property="og:image" content="{{ url_for('static', filename = 'img/image-hotel/foto-depan-hotel.jpg') }}" />
@@ -12,21 +11,311 @@
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/style/style.css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    
-</head>
 
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        .btn-print {
+            margin-right: 5px; 
+        }
+        .btn-review {
+            margin-left: 5px; 
+        }
+        .booking-card {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+        }
+
+        .booking-card-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .booking-card-body {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .booking-card-footer {
+            background-color: #ffffff;
+            padding: 15px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            text-align: right;
+        }
+
+        .btn-pay {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .btn-pay:hover {
+            background-color: #218838;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+            color: white;
+        }
+
+        .footer-spacing {
+            margin-top: 40px;
+        }
+
+        .text-orange {
+            color: orange;
+        }
+    </style>
+</head>
 <body>
     {% include 'user/reservasi/header.html' %}
+
+    <div class="container mt-5">
+        <h2 class="text-center">History Reservasi</h2>
+        <div class="row justify-content-center">
+            {% for booking in user_bookings %}
+            <div class="col-md-8">
+                <div class="card booking-card" id="booking-{{ booking._id }}">
+                    <div class="card-header booking-card-header">
+                        <h5 class="card-title">Booking ID: {{ booking.booking_code }} 
+                            <div id="timer-{{ booking._id }}"></div>
+                        </h5>
+                    </div>
+                    <div class="card-body booking-card-body">
+                        <p><strong>Nama:</strong> {{ booking.nama_lengkap }}</p>
+                        <p><strong>Email:</strong> {{ booking.email }}</p>
+                        <p><strong>Nomor Handphone:</strong> {{ booking.nomor_handphone|replace('+62', '') }}</p>
+                        <p><strong>Tipe Kamar:</strong> {{ booking.tipe_kamar }}</p>
+                        <p><strong>Pesanan Untuk:</strong> {{ booking.pesanan_untuk }}</p>
+                        <p><strong>Nama Tamu:</strong> {{ booking.guest_name }}</p>
+                        <p><strong>Lama Menginap:</strong> {{ booking.lama_inap }} Malam</p>
+                        {% if booking.permintaan_khusus|length <= 1 %}
+                        <p><strong>Permintaan Khusus:</strong> Tidak ada permintaan khusus</p>
+                        {% else %}
+                        <p><strong>Permintaan Khusus:</strong> {{ booking.permintaan_khusus[1:] | join(', ') }}</p>
+                        {% endif %}
+                        <p><strong>Harga Total:</strong> Rp {{ format_currency(booking.harga_total | default(0)) }}</span></p>
+                        <p><strong>Check-in:</strong> {{ booking.check_in_date }}</p>
+                        <p><strong>Check-out:</strong> {{ booking.check_out_date }}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge 
+                                {% if booking.status == 'menunggu pembayaran' %}
+                                    badge-primary
+                                {% elif booking.status == 'menunggu konfirmasi' %}
+                                    badge-warning
+                                {% elif booking.status == 'pesanan diterima' %}
+                                    badge-success
+                                {% elif booking.status == 'pesanan ditolak' %}
+                                    badge-danger
+                                {% elif booking.status == 'dibatalkan' %}
+                                    badge-danger
+                                {% endif %}
+                            ">{{ booking.status }}</span>
+                            {% if booking.status == 'pesanan ditolak' %}
+                                <br>
+                                <p><strong>Alasan:</strong> 
+                                    <span class="badge 
+                                    {% if booking.status == 'menunggu pembayaran' %}
+                                        badge-primary
+                                    {% elif booking.status == 'menunggu konfirmasi' %}
+                                        badge-warning
+                                    {% elif booking.status == 'pesanan diterima' %}
+                                        badge-success
+                                    {% elif booking.status == 'pesanan ditolak' %}
+                                        badge-danger
+                                    {% elif booking.status == 'dibatalkan' %}
+                                        badge-danger
+                                    {% endif %}
+                                ">{{ booking.alasan_penolakan }}</span>                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="card-footer booking-card-footer">
+                        {% if booking.status == 'menunggu pembayaran' %}
+                            <a class="btn btn-pay" onclick="payNow('{{ booking.booking_code }}')">Bayar Sekarang</a>
+                            <button class="btn btn-cancel" onclick="cancelBooking('{{ booking._id }}')">Batalkan</button>
+                        {% elif booking.status == 'menunggu konfirmasi' %}
+                            <a class="btn btn-print btn-primary" onclick="printOrder('{{ booking._id }}')">Cetak Bukti</a>
+                        {% elif booking.status == 'pesanan diterima' %}
+                            <a class="btn btn-print btn-primary" onclick="printOrder('{{ booking._id }}')">Cetak Bukti</a>
+                            {% if booking.can_review %}
+                                {% if not booking.review_exists %}
+                                    <a class="btn btn-warning btn-review" href="/give_review/{{ booking._id }}">Tulis Ulasan</a>
+                                {% else %}
+                                    <button class="btn btn-warning btn-review" disabled>Ulasan Sudah Dibuat</button>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>     
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="footer-spacing"></div>
     {% include 'user/footer/footer.html' %}
 
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-fRGXe4Msp4dHHS-n"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function cancelBooking(bookingId) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak dapat mengembalikan tindakan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, batalkan!',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post("/cancel_booking", { booking_id: bookingId }, function(data) {
+                        if (data.result === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: data.msg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: data.msg,
+                                showConfirmButton: true
+                            });
+                        }
+                    });
+                }
+            });
+        }            
+        
+        function printOrder(bookingId) {
+            var bookingCard = document.getElementById('booking-' + bookingId);
+            
+            var { jsPDF } = window.jspdf;
+            var doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text("Bukti Reservasi Hotel Telaga Mas", 10, 10);
 
+            doc.setFontSize(12);
+
+            var yPosition = 20;
+            bookingCard.querySelectorAll('p').forEach(function(p) {
+                doc.text(p.textContent, 10, yPosition);
+                yPosition += 10;
+            });
+
+            // Save the PDF
+            doc.save('Bukti Reservasi Hotel' + bookingId + '.pdf');
+        }
+
+        function payNow(bookingCode) {
+            $.getJSON(`/payment_token/${bookingCode}`, function(data) {
+                snap.pay(data.token, {
+                    onSuccess: function(result) {
+                        // Panggil AJAX untuk mengubah status setelah pembayaran berhasil
+                        $.ajax({
+                            url: '/update_booking_status',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ booking_code: bookingCode, new_status: 'menunggu konfirmasi' }),
+                            success: function(data) {
+                                if (data.result === 'success') {
+                                    window.location.href = '/user/room/booking/deluxe-room/payment-success';
+                                } else {
+                                    alert('Gagal memperbarui status booking: ' + data.message);
+                                }
+                            }
+                        });
+                    },
+                    onPending: function(result) {
+                        $.post("/booking_dibatalkan", { booking_id: bookingCode }, function(data) {
+                            if (data.result === 'success') {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Pembayaran gagal',
+                                    text: 'Pembayaran gagal dan booking dibatalkan.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.href = '/user/reservasi';
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: 'Gagal membatalkan booking: ' + data.msg,
+                                    showConfirmButton: true
+                                });
+                            }
+                        });                             
+                    },
+                    onError: function(result) {
+                        $.post("/booking_dibatalkan", { booking_id: bookingCode }, function(data) {
+                            if (data.result === 'success') {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Pembayaran gagal',
+                                    text: 'Pembayaran gagal dan booking dibatalkan.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.href = '/user/reservasi';
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: 'Gagal membatalkan booking: ' + data.msg,
+                                    showConfirmButton: true
+                                });
+                            }
+                        });
+                    },
+                    onClose: function() {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Pembayaran Ditutup',
+                            text: 'Anda menutup popup tanpa menyelesaikan pembayaran.',
+                            showConfirmButton: true
+                        });                    }
+                });
+            });
+        }
+    </script>
+</body>
 </html>
